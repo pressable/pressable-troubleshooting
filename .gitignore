@@ -1,0 +1,10 @@
+# Session working files, not part of the skill
+Claude outputs/
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
