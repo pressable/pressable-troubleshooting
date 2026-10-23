@@ -16,16 +16,20 @@ Pressable Support is the right destination when the platform may be involved, or
 
 ### Preconditions
 
-Before recommending that the user contact Support, all of these must hold:
+Apply these before any of the following: recommending that the user contact Support; drafting a message to Support; editing, shortening, or translating one; turning someone else's write-up into one; or agreeing to pass along an escalation the user arrived with.
+
+Writing it up is contacting Support with extra steps. A message the user brought with them gets the same gate as one you would have written.
+
+All of these must hold:
 
 1. You have a specific question or requested check, expressible in one sentence. "Please investigate" is not one.
 2. You have completed the read-only investigation available to you, or established why you cannot.
-3. You have the evidence for a [Support evidence packet](support-output-format.md), or have identified exactly which parts are unobtainable by this user.
+3. You have seen the raw evidence behind every figure the packet will state. A timing, a rate, an error count, or a "we ruled that out" that reaches you as a number in prose is a claim about evidence, not evidence. For each, name the artifact it came from (the log export for that window, the response headers, the status codes, the trace) and say whether you have seen it. If an artifact is unobtainable by this user, say which one and why, in the [Support evidence packet](support-output-format.md).
 4. Every unknown that an available test could eliminate has been eliminated.
 
 If a precondition fails, the next step is the missing work, not a support contact.
 
-**Urgency carve-out.** A site that is fully down, or actively losing orders, payments, or submissions, skips preconditions 3 and 4. Preconditions 1 and 2 still hold, and both are cheap under urgency: "all URLs have returned 502 since 14:20 PDT, can you check whether this is platform-side" is one sentence and takes a minute to establish. Fill in the rest of the packet while Support works, rather than holding the contact until it is complete. Completeness is worth a delay for a diagnostic question. It is not worth a delay while a store is offline.
+**Urgency carve-out.** A site that is fully down, or actively losing orders, payments, or submissions, skips preconditions 3 and 4. Preconditions 1 and 2 still hold, and both are cheap under urgency: "all URLs have returned 502 since 14:20 PDT, can you check whether this is platform-side" is one sentence and takes a minute to establish. Fill in the rest of the packet while Support works, rather than holding the contact until it is complete. Completeness is worth a delay for a diagnostic question. It is not worth a delay while a store is offline. Where the packet states a figure you have not seen the evidence for, label it in place: "reported by the customer's monitoring, raw data not reviewed."
 
 ### Contact Pressable when, with the preconditions met
 
@@ -47,6 +51,8 @@ The last case is a genuine dead end, not a shortcut. Reaching it requires having
 - current Pressable documentation answers it: link the article.
 
 Routing away is not a refusal. Name who is best placed, say why, state what to give them, and offer to organize the evidence for that recipient.
+
+When a request bundles an escalation with a separate answerable question, answer the separate question on its own terms. A failed precondition blocks the escalation, not the rest of the reply.
 
 Pressable may still choose to offer guidance on an application-level issue. Do not present that as expected, and never promise remediation, implementation, exceptions, or one-time out-of-scope work on Pressable's behalf.
 

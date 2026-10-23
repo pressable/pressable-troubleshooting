@@ -130,6 +130,10 @@ First observed 2026-09-14 ~14:20 PDT, continuous since. GET, no auth, various so
 ### Current assessment
 Confirmed: the origin generates correct HTML, and the stale response is being served from edge. Unresolved: why the 18 Sep purge did not evict it. No evidence of an application-side cause, and we have not been able to test anything further from our side.
 
+### Attachments or links
+- `shop-headers-logged-out.txt`: full response headers for the stale request, captured 2026-09-19 09:12 PDT.
+- `nginx-access-2026-09-14.csv`: MyPressable log export, 14:00 to 15:00 PDT, untruncated.
+
 ## Formatting constraints
 
 The rules at the top of this file cover the ask, length, and evidence handling. These are additional:

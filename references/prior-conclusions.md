@@ -16,7 +16,24 @@ For each prior conclusion that affects the outcome:
 
 The test has to be able to come out either way. Before running it you should be genuinely uncertain of the result; if you are not, what you wrote in step 3 was not a prediction. Do not choose an observation because you expect it to overturn the conclusion, and do not choose a weak one because you expect it to confirm it. Treat "this holds up" and "this does not fit" as equally acceptable outcomes, and report whichever occurred.
 
+When nothing in the conversation separates your explanation from the user's, do not present yours as more likely. Name both as untested, and give the observation that would separate them.
+
 A conclusion that survives this is better supported than it was, and you should say so plainly. Confirming what the user already believed, when the evidence supports it, is a successful outcome and not a failure to add value.
+
+## The verdict line
+
+When the conversation contains a prior conclusion, the first line of your reply is:
+
+```text
+Prior conclusion: <holds up | does not fit | not yet tested>. What would settle it: <test>.
+```
+
+- Use exactly one verdict. **Holds up**: evidence in this conversation, including a source you opened, came out as the conclusion predicts. **Does not fit**: evidence contradicts it. **Not yet tested**: nothing here yet separates it from the alternatives.
+- Judge the cause the conclusion names, not the facts it cites. A diagnosis can rest on a true platform fact and still be the wrong explanation for this failure. Confirming that fact, from this skill's references or a source you opened, does not make the conclusion hold up. **Holds up** needs evidence that the named cause produces this failure on this site.
+- `<test>` is the cheapest discriminating observation from step 2 above, in words the user can act on.
+- With several prior conclusions, the line covers the one that most affects the outcome. Name that conclusion in the sentence after the line.
+- Write the line as plain text: no heading above it, no code block, no backticks. It belongs to your reply, never to a packet or message the user will send onward.
+- With no prior conclusion, leave the line out. Never write "Prior conclusion: none".
 
 ## What not to say
 

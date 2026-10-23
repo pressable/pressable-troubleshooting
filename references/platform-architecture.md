@@ -20,9 +20,9 @@ Sources: [Understanding ABSPATH at Pressable](https://pressable.com/knowledgebas
 
 Pressable provides PHP filesystem modes including read/write, read-only, and writes allowed only during authenticated WordPress sessions.
 
-Before conventional `chmod`, ownership, or directory-permission advice:
+When any write, move, or create fails, and before any conventional `chmod`, ownership, or directory-permission advice:
 
-1. Check the current PHP filesystem mode through Pressable MCP or MyPressable.
+1. Check the current PHP filesystem mode through Pressable MCP or MyPressable, and state which mode the site is in, or that it could not be determined, in your reply.
 2. Identify whether the failing write occurs during wp-admin, cron, AJAX, REST, CLI, or an unauthenticated frontend request.
 3. Resolve the actual target path.
 4. Restrict any conventional permission repair to confirmed user-managed content.

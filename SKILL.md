@@ -44,7 +44,7 @@ Once it is established that Pressable does not host the site, stop applying anyt
 5. **Preserve uncertainty.** Label user reports, reproduced behavior, platform/log evidence, confirmed findings, ruled-out causes, hypotheses, and unknowns separately.
 6. **Gate production writes.** A production change is not categorically prohibited, but before approving or performing any write against production, including through Pressable MCP, apply the production write gate in [safety and change management](references/safety-and-change-management.md). Then use the narrowest reversible action with a defined rollback plan.
 7. **Reassess ownership after every material finding.** The responsible layer may be the device, local AI/MCP client, DNS/proxy, edge, Pressable origin, WordPress, site code/data, or an external service. Do not force a classification.
-8. **Route deliberately.** Never require the user to prove platform fault before contacting Support, and never send them to Support as a way of ending the conversation. Apply the gate in [support scope and routing](references/support-scope-and-routing.md) before recommending any contact.
+8. **Route deliberately.** Never require the user to prove platform fault before contacting Support, and never send them to Support as a way of ending the conversation. Apply the gate in [support scope and routing](references/support-scope-and-routing.md) before recommending any contact, and before drafting, editing, or forwarding anything the user intends to send to Support.
 
 ## Working without web access
 
@@ -74,9 +74,7 @@ The installed version is in the adjacent `VERSION` file. Once per conversation, 
 
 ## References
 
-Load all of these before your first substantive answer. They are short, and most of the guidance is cross-cutting rather than topical: the safety gate applies before any write whatever the subject, routing applies at the end of every investigation, and prior conclusions applies from the first message. Choosing up front which ones you will need means choosing from the user's opening framing, which is the least reliable moment in the conversation. An issue that presents as performance turns out to be a compromise often enough that the security reference cannot be optional.
-
-Re-consult them as the investigation moves. Core rule 7 requires reassessing ownership after every material finding; do the same here, because what the issue is about changes as evidence arrives.
+Read all seven files below now, in full, before you reply. Read them even when the question looks narrow, even when the site is down, and even when you believe you already know the answer. Do not decide which ones are relevant first.
 
 - Filesystem, managed core, cache architecture, server configuration, domains, and network identity: [platform architecture](references/platform-architecture.md)
 - Logs, metrics, APM, response headers, PHP workers, HTTP statuses, and performance reasoning: [diagnostics and performance](references/diagnostics-and-performance.md)
@@ -85,7 +83,10 @@ Re-consult them as the investigation moves. Core rule 7 requires reassessing own
 - Testing conclusions the conversation already contains, and handling disagreement: [working with prior conclusions](references/prior-conclusions.md)
 - Support responsibilities, ownership decisions, and the routing gate: [support scope and routing](references/support-scope-and-routing.md)
 - Required diagnosis, investigation-plan, handoff, and Support-packet formats: [support output format](references/support-output-format.md)
-- Checking whether a newer release of this skill exists: [skill updates](references/skill-updates.md)
+
+Re-consult them as the investigation moves. Core rule 7 requires reassessing ownership after every material finding; do the same here, because what the issue is about changes as evidence arrives.
+
+An eighth file, [skill updates](references/skill-updates.md), is not part of that set. It covers checking whether a newer release of this skill exists, which is conditional and separate: use it only as described under "Skill version" above.
 
 ## Investigation workflow
 
@@ -112,7 +113,13 @@ If the site is fully down, returning errors sitewide, or inaccessible in wp-admi
 
 5. **Recover if the cause is identified.** A plugin or theme named in a fatal error can be deactivated from MyPressable or over Pressable MCP without wp-admin access, so being locked out of wp-admin does not leave the user stuck. This is still a production change: apply the production write gate in [safety and change management](references/safety-and-change-management.md), while noting that deactivating a single named extension is narrow and reversible by reactivating it.
 
-Then rejoin the workflow at step 2. Do not delay a user with a down site by collecting information that is not needed to restore service.
+Then rejoin the workflow at step 2. Before you do, re-read the error strings and log lines already in this conversation, including any that were dismissed as routine; that is the only part of step 0 that runs under urgency. Do not delay a user with a down site by collecting information that is not needed to restore service.
+
+### Errors that name their own next check
+
+Some failures identify the check that settles them. When the conversation contains one, run that check before forming any other explanation.
+
+**A write, move, or create that failed.** The error text names it: `Read-only file system`, `Failed to open stream`, `Failed to create temporary directory`, `could not create directory`, `not writable`, or `Permission denied` on a write. Check the site's PHP filesystem mode first, and name the mode, or the fact that it could not be determined, in your reply. Then follow the numbered procedure in [platform architecture](references/platform-architecture.md). Do not offer `chmod`, ownership, `.htaccess`, `php.ini`, or a code-path explanation before the mode is known.
 
 ### 0. Take stock of what has already been concluded
 
@@ -124,7 +131,7 @@ Before gathering anything new, re-read the conversation so far and establish:
 - which of those rest on evidence present in the conversation, and which are assertion;
 - which ones the user appears to treat as settled.
 
-Carry the unsupported ones forward as untested hypotheses, not as background facts. They are now part of what this investigation has to resolve. See [working with prior conclusions](references/prior-conclusions.md).
+Carry the unsupported ones forward as untested hypotheses, not as background facts. They are now part of what this investigation has to resolve. See [working with prior conclusions](references/prior-conclusions.md), and open your reply with the verdict line it defines.
 
 ### 1. Identify the site and hosting provider
 
@@ -142,7 +149,7 @@ When the host is unknown or unconfirmed, work down this list. Stop once you have
 
 ### 2. Define the failure precisely
 
-Do not ask again for supplied information. Gather only missing details:
+Do not ask again for information the user has already supplied. A figure someone summarized is not the same information as the evidence under it: asking for the log export behind a quoted response time, or the headers behind a claimed cache state, is a new request, not a repeat one. Gather only missing details:
 
 - reproduction steps and frequency;
 - exact timestamp and timezone;
@@ -171,7 +178,7 @@ Choose the source most likely to answer the immediate question. Preserve raw, un
 - Activity logs for account and site actions.
 - A short, deliberately activated APM capture for a reproduced PHP request.
 - Headers and response bodies for cache, proxy, and edge behavior.
-- Site details for environment, PHP filesystem mode, plan allowance, domains, and configuration.
+- Site details for environment, PHP filesystem mode (check it for any write failure), plan allowance, domains, and configuration.
 - Plugin/theme inventories and backup listings when relevant.
 
 ### 6. Classify findings and form falsifiable hypotheses

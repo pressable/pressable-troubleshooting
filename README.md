@@ -21,6 +21,14 @@ With the skill loaded, your assistant should:
 
 That last point matters to both sides. A support conversation that opens with the actual question, the evidence, and what has already been ruled out gets resolved considerably faster than one that opens with several screens of AI output.
 
+When the conversation already contains a diagnosis, whether from you, another assistant, a forum thread, or earlier in the same chat, the assistant opens its reply with a one-line verdict on it:
+
+```text
+Prior conclusion: not yet tested. What would settle it: check the site's PHP filesystem mode in MyPressable.
+```
+
+The verdict is *holds up*, *does not fit*, or *not yet tested*, and the second half names the quickest check that would tell you which. Any of the three can be the right answer: a diagnosis the evidence supports gets *holds up*. Replies with no earlier diagnosis to test leave the line out.
+
 ## Installing
 
 Both Claude and ChatGPT support skills directly. Install this the way your assistant documents:
