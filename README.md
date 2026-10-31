@@ -31,6 +31,8 @@ The verdict is *holds up*, *does not fit*, or *not yet tested*, and the second h
 
 ## Installing
 
+Download the latest release: [pressable-troubleshooting.zip](https://github.com/pressable/pressable-troubleshooting/releases/latest/download/pressable-troubleshooting.zip)
+
 Both Claude and ChatGPT support skills directly. Install this the way your assistant documents:
 
 - Claude: [Use Skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude)
@@ -58,4 +60,4 @@ It also does not speak for Pressable. It cannot make commitments about what Pres
 
 ## Feedback
 
-Open an issue in this repository. Reports of the skill getting something wrong are the most useful kind: include what it told you and what turned out to be true.
+Contact Pressable Support at help@pressable.com. Reports of the skill getting something wrong are the most useful kind: in a few lines, include what it told you and what turned out to be true, not the full conversation.

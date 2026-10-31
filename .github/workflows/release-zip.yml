@@ -1,0 +1,100 @@
+# Builds pressable-troubleshooting.zip and attaches it to each GitHub release.
+#
+# Why: the README links to .../releases/latest/download/pressable-troubleshooting.zip, and GitHub
+# only serves that URL if the newest release has a file with exactly that name attached. Building
+# it here, from the tagged commit, means nobody zips files by hand and the ZIP always matches the tag.
+#
+# Primer for a maintainer new to GitHub Actions: GitHub runs every .yml file in .github/workflows/
+# on its own temporary machines ("runners") when the event under `on:` happens. A job's steps run
+# in order, and the job stops at the first failure. Run history is under the repo's Actions tab.
+
+name: release-zip
+
+on:
+  release:
+    # "published" fires when a release goes public (created directly, or a draft published).
+    # Not "created", which also fires for drafts that aren't final yet.
+    types: [published]
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+
+    # Each job gets a short-lived token. Listing permissions here grants only these. Attaching a
+    # file to a release counts as writing repository contents, so this is the minimum that works.
+    permissions:
+      contents: write
+
+    # Naming bash explicitly turns on -e and -o pipefail: any failed command, even mid-pipe,
+    # stops the run instead of carrying on to upload something broken.
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Copies the repo onto the runner at the commit the release tag points to. Pinned to a full
+      # SHA because a tag like v7 can be moved to different code later; a SHA can't. To update,
+      # take the new release's commit from github.com/actions/checkout/releases and change both
+      # the SHA and the comment. persist-credentials: false keeps the token out of the checkout,
+      # since nothing here pushes.
+      - name: Check out the tagged commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Refuse to ship a broken or mislabelled skill. Tag v1.2.0 must carry VERSION 1.2.0, or the
+      # skill's update check compares the wrong number. release.json is what installed copies read
+      # for that check, so its version and release link must name this tag too. The tag comes in
+      # through env rather than ${{ }} inside the script, so a tag containing shell characters is
+      # treated as text, not code.
+      - name: Check SKILL.md exists and VERSION and release.json match the tag
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [[ ! -f SKILL.md ]]; then
+            echo "::error::SKILL.md is missing at $TAG; refusing to build the ZIP."
+            exit 1
+          fi
+          if [[ ! -f VERSION ]]; then
+            echo "::error::VERSION is missing at $TAG; refusing to build the ZIP."
+            exit 1
+          fi
+          version="$(tr -d '[:space:]' < VERSION)"
+          if [[ "$TAG" != "v$version" ]]; then
+            echo "::error::Release tag $TAG does not match VERSION $version (expected v$version)."
+            exit 1
+          fi
+          echo "Tag $TAG matches VERSION $version."
+          # jq (a JSON reader) is preinstalled on GitHub's runners; -e makes it fail if a key is missing.
+          json_version="$(jq -er '.version' release.json)"
+          json_url="$(jq -er '.release_url' release.json)"
+          expected_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
+          if [[ "$json_version" != "$version" ]]; then
+            echo "::error::release.json version $json_version does not match VERSION $version."
+            exit 1
+          fi
+          if [[ "$json_url" != "$expected_url" ]]; then
+            echo "::error::release.json release_url is $json_url, expected $expected_url."
+            exit 1
+          fi
+          echo "release.json matches $TAG."
+
+      # git archive packs files exactly as committed, so nothing stray on the runner gets in, and
+      # it fails if any listed path is missing. --prefix puts everything under one top-level
+      # folder, which is the layout Claude expects for an uploaded skill. The listing goes to the
+      # run log so anyone can check the contents without downloading.
+      - name: Build pressable-troubleshooting.zip
+        run: |
+          git archive --format=zip --prefix=pressable-troubleshooting/ \
+            --output=pressable-troubleshooting.zip \
+            HEAD SKILL.md references VERSION release.json LICENSE
+          unzip -l pressable-troubleshooting.zip
+
+      # gh (GitHub's CLI) comes preinstalled on GitHub's runners and reads its token from
+      # GH_TOKEN. --clobber replaces an existing file with the same name, so re-running this
+      # workflow fixes a bad upload instead of failing on the duplicate.
+      - name: Attach the ZIP to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" pressable-troubleshooting.zip --clobber --repo "$GITHUB_REPOSITORY"
